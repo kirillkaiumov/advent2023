@@ -94,4 +94,71 @@ defmodule AdventOfCode.Day05 do
 
     traverse(maps, index, start, offset + 1, range_size, result)
   end
+
+  def part2_wip(args) do
+    args
+    |> trim()
+    |> split("\n\n")
+    |> then(fn [seeds | maps] ->
+      seeds =
+        seeds
+        |> split(" ")
+        |> then(fn [_ | seeds] -> seeds end)
+        |> map(&to_integer/1)
+        |> chunk_every(2)
+
+      maps =
+        map(maps, fn map ->
+          map
+          |> split("\n")
+          |> then(fn [_ | maps] -> maps end)
+          |> map(fn line ->
+            [dest, src, size] = line |> split(" ") |> map(&to_integer/1)
+
+            {dest, src, size}
+          end)
+        end)
+
+      seeds
+      |> map(fn [seed_start, seed_size] ->
+        maps
+        |> reduce([{seed_start, seed_size}], fn map, curr_seeds ->
+          # require IEx
+          # IEx.pry()
+
+          reduce(curr_seeds, [], fn {seed_start, seed_size}, acc_3 ->
+            result =
+              reduce(map, [], fn {dest, src, size}, acc_2 ->
+                cond do
+                  seed_start > src + size - 1 ->
+                    acc_2
+
+                  seed_start + seed_size - 1 < src ->
+                    acc_2
+
+                  true ->
+                    common_start = max([seed_start, src])
+                    common_end = min([seed_start + seed_size - 1, src + size - 1])
+
+                    new_start = dest + common_start - src
+                    new_size = common_end - common_start + 1
+
+                    require IEx
+                    IEx.pry()
+
+                    [{new_start, new_size} | acc_2]
+                end
+              end)
+
+            result ++ acc_3
+          end)
+        end)
+      end)
+      |> then(fn result ->
+        nil
+        # require IEx
+        # IEx.pry()
+      end)
+    end)
+  end
 end

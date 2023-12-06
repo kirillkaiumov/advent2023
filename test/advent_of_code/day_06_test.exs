@@ -3,17 +3,20 @@ defmodule AdventOfCode.Day06Test do
 
   import AdventOfCode.Day06
 
-  @tag :skip
   test "part1" do
-    input = nil
+    input = [
+      {7, 9},
+      {15, 40},
+      {30, 200}
+    ]
+
     result = part1(input)
 
-    assert result
+    assert result == 288
   end
 
-  @tag :skip
   test "part2" do
-    input = nil
+    input = {71530, 940_200}
     result = part2(input)
 
     assert result
